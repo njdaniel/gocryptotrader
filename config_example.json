@@ -2397,6 +2397,62 @@
      "supportedCurrencies": ""
     }
    ]
+  },
+  {
+   "name": "CoinbaseAdvanced",
+   "enabled": false,
+   "verbose": false,
+   "httpTimeout": 15000,
+   "httpUserAgent": "",
+   "httpProxy": "",
+   "httpProxyEnabled": false,
+   "wsProxy": "",
+   "wsProxyEnabled": false,
+   "baseCurrencies": "USD,USDC",
+   "assetTypes": [
+    "spot"
+   ],
+   "pairFormat": {
+    "delimiter": "-",
+    "index": "basefirst"
+   },
+   "requestCurrencyPairFormat": {
+    "delimiter": "-",
+    "index": "basefirst"
+   },
+   "configCurrencyPairFormat": {
+    "delimiter": "-",
+    "index": "basefirst"
+   },
+   "api": {
+    "authenticatedSupport": true,
+    "credentials": {
+     "key": "COINBASEADVANCED_API_KEY",
+     "secret": "COINBASEADVANCED_API_SECRET",
+     "clientID": "",
+     "pemKey": ""
+    },
+    "endpoints": {
+     "url": "https://api.coinbase.com/api/v3/brokerage/",
+     "websocketURL": "wss://advanced-trade-ws.coinbase.com"
+    },
+    "httpTimeout": 15000,
+    "httpUserAgent": "",
+    "httpProxy": "",
+    "httpProxyEnabled": false,
+    "wsProxy": "",
+    "wsProxyEnabled": false
+   },
+   "features": {
+    "autoPairUpdates": true,
+    "websocket": true,
+    "rest": true
+   },
+   "currencies": [],
+   "assetEnabled": {
+    "spot": true
+   },
+   "assetDisabled": {}
   }
  ],
  "bankAccounts": [
