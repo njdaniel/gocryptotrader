@@ -246,3 +246,83 @@ type WSSubscribeMessage struct {
 	JWT        string   `json:"jwt,omitempty"`
 	Timestamp  string   `json:"timestamp,omitempty"`
 }
+
+// WebSocket response types
+type WsResponse struct {
+	Channel   string      `json:"channel"`
+	ClientID  string      `json:"client_id"`
+	Timestamp time.Time   `json:"timestamp"`
+	Type      string      `json:"type"`
+	Events    interface{} `json:"events"`
+}
+
+// WsSubscribeRequest represents a websocket subscription request
+type WsSubscribeRequest struct {
+	Type       string   `json:"type"`
+	ProductIDs []string `json:"product_ids"`
+	Channel    string   `json:"channel"`
+	Signature  string   `json:"signature,omitempty"`
+	Key        string   `json:"key,omitempty"`
+	Passphrase string   `json:"passphrase,omitempty"`
+	Timestamp  string   `json:"timestamp,omitempty"`
+}
+
+// WsTickerData represents websocket ticker data
+type WsTickerData struct {
+	Channel string          `json:"channel"`
+	Events  []WsTickerEvent `json:"events"`
+}
+
+type WsTickerEvent struct {
+	Type    string     `json:"type"`
+	Tickers []WsTicker `json:"tickers"`
+}
+
+type WsTicker struct {
+	Type      string `json:"type"`
+	ProductID string `json:"product_id"`
+	Price     string `json:"price"`
+	Volume24h string `json:"volume_24_h"`
+	Low24h    string `json:"low_24_h"`
+	High24h   string `json:"high_24_h"`
+	Change24h string `json:"price_percent_change_24_h"`
+}
+
+// WsOrderbookData represents websocket orderbook data
+type WsOrderbookData struct {
+	Channel string             `json:"channel"`
+	Events  []WsOrderbookEvent `json:"events"`
+}
+
+type WsOrderbookEvent struct {
+	Type      string              `json:"type"`
+	ProductID string              `json:"product_id"`
+	Updates   []WsOrderbookUpdate `json:"updates"`
+}
+
+type WsOrderbookUpdate struct {
+	Side        string `json:"side"`
+	EventTime   string `json:"event_time"`
+	PriceLevel  string `json:"price_level"`
+	NewQuantity string `json:"new_quantity"`
+}
+
+// WsTradeData represents websocket trade data
+type WsTradeData struct {
+	Channel string         `json:"channel"`
+	Events  []WsTradeEvent `json:"events"`
+}
+
+type WsTradeEvent struct {
+	Type   string    `json:"type"`
+	Trades []WsTrade `json:"trades"`
+}
+
+type WsTrade struct {
+	TradeID   string `json:"trade_id"`
+	ProductID string `json:"product_id"`
+	Price     string `json:"price"`
+	Size      string `json:"size"`
+	Side      string `json:"side"`
+	Time      string `json:"time"`
+}

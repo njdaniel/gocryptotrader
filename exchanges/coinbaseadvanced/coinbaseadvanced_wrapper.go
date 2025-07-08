@@ -7,6 +7,7 @@ import (
 	"github.com/thrasher-corp/gocryptotrader/common"
 	"github.com/thrasher-corp/gocryptotrader/config"
 	"github.com/thrasher-corp/gocryptotrader/currency"
+	"github.com/thrasher-corp/gocryptotrader/exchange/websocket"
 	exchange "github.com/thrasher-corp/gocryptotrader/exchanges"
 	"github.com/thrasher-corp/gocryptotrader/exchanges/account"
 	"github.com/thrasher-corp/gocryptotrader/exchanges/asset"
@@ -59,11 +60,17 @@ func (c *CoinbaseAdvanced) SetDefaults() {
 	}
 	c.API.Endpoints = c.NewEndpoints()
 	err = c.API.Endpoints.SetDefaultEndpoints(map[exchange.URL]string{
-		exchange.RestSpot: coinbaseAdvancedAPIURL,
+		exchange.RestSpot:      coinbaseAdvancedAPIURL,
+		exchange.WebsocketSpot: coinbaseAdvancedWSURL,
 	})
 	if err != nil {
 		log.Errorln(log.ExchangeSys, err)
 	}
+
+	c.Websocket = websocket.NewManager()
+	c.WebsocketResponseMaxLimit = exchange.DefaultWebsocketResponseMaxLimit
+	c.WebsocketResponseCheckTimeout = exchange.DefaultWebsocketResponseCheckTimeout
+	c.WebsocketOrderbookBufferLimit = exchange.DefaultWebsocketOrderbookBufferLimit
 }
 
 // Setup initializes the exchange parameters with default settings
@@ -81,7 +88,29 @@ func (c *CoinbaseAdvanced) Setup(exch *config.Exchange) error {
 		return err
 	}
 
-	return nil
+	wsRunningURL, err := c.API.Endpoints.GetURL(exchange.WebsocketSpot)
+	if err != nil {
+		return err
+	}
+
+	err = c.Websocket.Setup(&websocket.ManagerSetup{
+		ExchangeConfig:        exch,
+		DefaultURL:            coinbaseAdvancedWSURL,
+		RunningURL:            wsRunningURL,
+		Connector:             c.WsConnect,
+		Subscriber:            c.Subscribe,
+		Unsubscriber:          c.Unsubscribe,
+		GenerateSubscriptions: c.GenerateDefaultSubscriptions,
+		Features:              &c.Features.Supports.WebsocketCapabilities,
+	})
+	if err != nil {
+		return err
+	}
+
+	return c.Websocket.SetupNewConnection(&websocket.ConnectionSetup{
+		ResponseCheckTimeout: exch.WebsocketResponseCheckTimeout,
+		ResponseMaxLimit:     exch.WebsocketResponseMaxLimit,
+	})
 }
 
 // GetAccountInfo returns account information
